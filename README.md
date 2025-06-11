@@ -1,40 +1,4 @@
-import Joi from 'joi';
-
-export const signupSchema = Joi.object({
-  import { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
-import UserModel from '../models/UserModel'; // Update the path as needed
-import { signupSchema } from '../validators/signupValidator'; // Joi schema
-
-export const signup = async (req: Request, res: Response) => {
-  try {
-    // Validate request body using Joi
-    const { error } = signupSchema.validate(req.body, { abortEarly: false });
-    if (error) {
-      return res.status(400).json({
-        success: false,
-        message: 'Validation failed',
-        errors: error.details.map((err) => err.message)
-      });
-    }
-
-    const { firstName, lastName, email, phone, password, role } = req.body;
-
-    // Check if user already exists
-    const existingUser = await UserModel.findOne({ email });
-    if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message: 'User already exists, please log in'
-      });
-    }
-
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create new user
-    const newUser = new UserModel({
-      firstName,# OTW - Ride Sharing Web Application 🚗
+# OTW - Ride Sharing Web Application 🚗More actions
 
 A full-stack ride-sharing application where passengers can register, book rides, and manage their trips through a responsive dashboard. Built using **React**, **Node.js**, and **MongoDB**.
 
@@ -88,6 +52,7 @@ A full-stack ride-sharing application where passengers can register, book rides,
 git clone https://github.com/yourusername/otw-rideshare.git
 cd otw-rideshare
 ```
+
 ---
 ### Step 2. Backend Setup
 ```bash
@@ -113,4 +78,3 @@ cd ../frontend
 npm install
 npm run dev
 ```
-
