@@ -2,7 +2,7 @@ const Passenger = require('../models/passModel');
 
 const getPassenger = async (req, res) => {
     try {
-        const passengers = await Passenger.find({});
+        const passengers = await Passenger.find({}).sort({ createdAt: -1 });
         res.status(200).json(passengers);
     } catch (error) {
         res.status(500).json({

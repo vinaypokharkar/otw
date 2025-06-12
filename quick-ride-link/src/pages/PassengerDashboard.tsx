@@ -16,10 +16,14 @@ const PassengerDashboard = () => {
   });
 
   // On component mount, populate name & email from localStorage
+const [emailLoaded, setEmailLoaded] = useState(false);
+
 useEffect(() => {
   const name = localStorage.getItem('name') || '';
   const email = localStorage.getItem('email') || '';
   const phone = localStorage.getItem('phone') || '';
+
+   console.log('Loaded email from localStorage:', email); // 👈
 
   setRideData((prevData) => ({
     ...prevData,
@@ -27,6 +31,7 @@ useEffect(() => {
     email,
     phone
   }));
+  setEmailLoaded(true);  //  Trigger second useEffect
 }, []);
 
   console.log(localStorage.getItem('name'));
@@ -93,7 +98,7 @@ useEffect(() => {
 useEffect(() => {
   const fetchCurrentTrip = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/passenger/?email=${rideData.email}`);
+      const response = await fetch(`http://localhost:3000/passenger/email/${rideData.email}`);
       const result = await response.json();
 
       if (response.ok && result?.ride) {
@@ -106,10 +111,11 @@ useEffect(() => {
     }
   };
 
-  if (rideData.email) {
+  if (emailLoaded && rideData.email) {
     fetchCurrentTrip();
   }
-}, [rideData.email]);
+}, [emailLoaded, rideData.email]);
+
 
 const handleTripUpdate = async (status: 'completed' | 'cancelled') => {
   try {
@@ -187,7 +193,7 @@ const handleTripUpdate = async (status: 'completed' | 'cancelled') => {
             </form>
 
             {/* Current Trip */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
+            <div className="bg-white rounded-xl shadow-lg p-6" >
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Current Trip</h2>
 
               {currentTrip ? (

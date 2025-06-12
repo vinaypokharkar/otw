@@ -1,9 +1,39 @@
 
 import React, { useState } from 'react';
 import { Car, DollarSign, Clock, Star, Navigation, Users, TrendingUp } from 'lucide-react';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 const DriverDashboard = () => {
   const [isOnline, setIsOnline] = useState(false);
+
+const [rides, setRides] = useState([]);
+
+useEffect(() => {
+  const fetchRides = async () => {
+    try {
+      const email = localStorage.getItem('email');
+      const res = await axios.get(`http://localhost:3000/passenger/`);
+      setRides(res.data); // assuming backend returns array of rides
+    } catch (err) {
+      console.error('Error fetching rides:', err);
+    }
+  };
+
+  if (isOnline) fetchRides();
+}, [isOnline]);
+
+
+const handleAccept = async (rideId) => {
+  // try {
+  //   await axios.post(`http://localhost:5000/api/rides/accept`, { rideId });
+  //   alert('Ride accepted!');
+  //   setRides(rides.filter(ride => ride._id !== rideId)); // remove accepted ride from UI
+  // } catch (err) {
+  //   console.error('Error accepting ride:', err);
+  // }
+};
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -42,11 +72,29 @@ const DriverDashboard = () => {
             <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Current Ride</h2>
               {isOnline ? (
-                <div className="text-center py-8">
-                  <Navigation className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">Waiting for ride requests</p>
-                  <p className="text-sm text-gray-400">New requests will appear here</p>
-                </div>
+                  rides.length > 0 ? (
+              <div className="space-y-4">
+                {rides.map((ride) => (
+                  <div key={ride._id} className="bg-gray-100 rounded-lg p-4 flex justify-between items-center">
+                    <div>
+                      <p className="text-gray-800 font-medium">
+                        Pickup: {ride.pickupLocation} → Drop: {ride.dropLocation}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleAccept(ride._id)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+                    >
+                      Accept
+                    </button>
+                  </div>
+                ))}
+              </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <p className="text-gray-500">No current rides</p>
+                    </div>
+                  )
               ) : (
                 <div className="text-center py-8">
                   <Car className="w-12 h-12 text-gray-400 mx-auto mb-4" />
