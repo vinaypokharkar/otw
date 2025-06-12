@@ -13,7 +13,7 @@ useEffect(() => {
   const fetchRides = async () => {
     try {
       const email = localStorage.getItem('email');
-      const res = await axios.get(`http://localhost:3000/passenger/`);
+      const res = await axios.get(`http://localhost:3000/passenger/requested-latest`);
       setRides(res.data); // assuming backend returns array of rides
     } catch (err) {
       console.error('Error fetching rides:', err);

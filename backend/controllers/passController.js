@@ -81,5 +81,24 @@ const updatePassengerStatus = async (req, res) => {
   }
 };
 
+// controller/passengerController.js
+const getRequestedPassengers = async (req, res) => {
+  try {
+    const requestedPassengers = await Passenger.find({ status: "requested" })
+      .sort({ createdAt: -1 }); // Sort by latest
 
-module.exports = { getPassenger , getPassengerByEmail, postPassenger, getLatestPassengerRequestByEmail, updatePassengerStatus };
+    res.status(200).json(requestedPassengers);
+  } catch (error) {
+    console.error("Error fetching requested passengers:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+module.exports = { getRequestedPassengers };
+
+
+
+module.exports = { getPassenger , getPassengerByEmail, postPassenger, getLatestPassengerRequestByEmail, updatePassengerStatus , getRequestedPassengers };

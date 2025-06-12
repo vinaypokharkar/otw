@@ -1,7 +1,7 @@
 const express = require('express');
 
 
-const { getPassenger, getPassengerByEmail, postPassenger, getLatestPassengerRequestByEmail , updatePassengerStatus } = require('../controllers/passController');
+const { getPassenger, getPassengerByEmail, postPassenger, getLatestPassengerRequestByEmail , updatePassengerStatus, getRequestedPassengers } = require('../controllers/passController');
 // const { verifyPassenger } = require('../middleware/passValidation');
 // const { passengerValidation } = require('../middleware/passValidation');
 
@@ -19,4 +19,7 @@ router.post('/post', postPassenger);
 router.get('/latest', getLatestPassengerRequestByEmail);
 
 router.put('/update/:id', updatePassengerStatus);
+
+router.get('/requested-latest', getRequestedPassengers);
+
 module.exports = router;
