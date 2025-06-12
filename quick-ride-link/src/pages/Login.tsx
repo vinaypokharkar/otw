@@ -30,7 +30,7 @@ const Login = () => {
   }
 
   try {
-    const response = await fetch(`${process.env.BACKEND_BASE_URL}/auth/login`, {
+    const response = await fetch(`http://localhost:3000/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -50,6 +50,7 @@ const Login = () => {
     localStorage.setItem("token", token);
     localStorage.setItem("email", formData.email);
     localStorage.setItem("name", user?.firstName || "User");
+    localStorage.setItem("phone", user?.phone || "1234567890");
 
     console.log("Login result:", result);
     // Show message and redirect

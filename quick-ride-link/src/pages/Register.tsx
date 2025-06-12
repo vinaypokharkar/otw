@@ -46,7 +46,7 @@ const Register = () => {
 
     // Example API call (replace with your actual API endpoint)
     try {
-      const response = await fetch(`${process.env.BACKEND_BASE_URL}/auth/signup`, {
+      const response = await fetch(`http://localhost:3000/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

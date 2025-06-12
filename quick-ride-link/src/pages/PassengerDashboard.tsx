@@ -46,7 +46,7 @@ useEffect(() => {
     try {
       const token = localStorage.getItem('token');
 
-      const response = await fetch(`${process.env.BACKEND_BASE_URL}/passenger/post`, {
+      const response = await fetch(`http://localhost:3000/passenger/post`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -81,6 +81,7 @@ useEffect(() => {
       }
     } catch (err) {
       console.error('Error submitting ride:', err);
+      console.log(err);
     }
   };
 
@@ -92,7 +93,7 @@ useEffect(() => {
 useEffect(() => {
   const fetchCurrentTrip = async () => {
     try {
-      const response = await fetch(`${process.env.BACKEND_BASE_URL}/passenger/?email=${rideData.email}`);
+      const response = await fetch(`http://localhost:3000/passenger/?email=${rideData.email}`);
       const result = await response.json();
 
       if (response.ok && result?.ride) {
@@ -112,7 +113,7 @@ useEffect(() => {
 
 const handleTripUpdate = async (status: 'completed' | 'cancelled') => {
   try {
-    const response = await fetch(`${process.env.BACKEND_BASE_URL}/passenger/update/${currentTrip._id}`, {
+    const response = await fetch(`http://localhost:3000/passenger/update/${currentTrip._id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status })
@@ -144,7 +145,7 @@ const handleTripUpdate = async (status: 'completed' | 'cancelled') => {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Booking Section */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <form className="bg-white rounded-xl shadow-lg p-6 mb-6" onSubmit={handleSubmit}>
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Book a Ride</h2>
               
               <div className="space-y-4">
@@ -156,6 +157,9 @@ const handleTripUpdate = async (status: 'completed' | 'cancelled') => {
                       type="text"
                       className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Enter pickup location"
+                      onChange={handleInputChange}
+                      name="pickupLocation"
+                      value={rideData.pickupLocation}
                     />
                   </div>
                 </div>
@@ -168,15 +172,19 @@ const handleTripUpdate = async (status: 'completed' | 'cancelled') => {
                       type="text"
                       className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Where to?"
+                      onChange={handleInputChange}
+                      name="dropLocation"
+                      value={rideData.dropLocation}
                     />
                   </div>
                 </div>
                 
-                <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                type='submit'>
                   Find Rides
                 </button>
               </div>
-            </div>
+            </form>
 
             {/* Current Trip */}
             <div className="bg-white rounded-xl shadow-lg p-6">
