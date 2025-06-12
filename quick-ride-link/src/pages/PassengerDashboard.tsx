@@ -4,6 +4,7 @@ import { MapPin, Clock, Star, CreditCard, History } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { handleError, handleSuccess } from '../utils'; // Assuming you have these utility functions
+import axios from 'axios';
 
 const PassengerDashboard = () => {
 
@@ -81,6 +82,7 @@ useEffect(() => {
         });
         // Show success message
         handleSuccess('Ride booked successfully!');
+        window.location.reload(); // Reload to fetch latest trip
       } else {
         handleError(result.message || 'Failed to book ride');
       }
@@ -92,29 +94,23 @@ useEffect(() => {
 
 
 
-  const [currentTrip, setCurrentTrip] = useState<any>(null); // You can type it properly if needed
+  const [currentTrip, setCurrentTrip] = useState(null);
 
-// Fetch the latest trip on mount
-useEffect(() => {
-  const fetchCurrentTrip = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/passenger/email/${rideData.email}`);
-      const result = await response.json();
-
-      if (response.ok && result?.ride) {
-        setCurrentTrip(result.ride);
-      } else {
-        console.error('No current trip found');
+  useEffect(() => {
+    const fetchLatestTrip = async () => {
+      try {
+        const email = localStorage.getItem('email');
+        const res = await axios.get(`http://localhost:3000/passenger/latest?email=${email}`);
+        setCurrentTrip(res.data);
+      } catch (error) {
+        console.error("Error fetching latest trip:", error);
       }
-    } catch (error) {
-      console.error('Error fetching current trip:', error);
-    }
-  };
+    };
 
-  if (emailLoaded && rideData.email) {
-    fetchCurrentTrip();
-  }
-}, [emailLoaded, rideData.email]);
+    fetchLatestTrip();
+  }, []);
+
+
 
 
 const handleTripUpdate = async (status: 'completed' | 'cancelled') => {

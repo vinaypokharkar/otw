@@ -46,5 +46,40 @@ try {
     }
 }
 
+const getLatestPassengerRequestByEmail = async (req, res) => {
+    try {
+        const { email } = req.query; // e.g., /api/passenger/latest?email=test@gmail.com
 
-module.exports = { getPassenger , getPassengerByEmail, postPassenger };
+        const ride = await Passenger.findOne({ email }).sort({ createdAt: -1 });
+
+        if (!ride) {
+            return res.status(404).json({ success: false, message: 'No ride found' });
+        }
+
+        res.status(200).json(ride);
+    } catch (error) {
+        console.error('Error fetching ride:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
+
+const updatePassengerStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const updatedRide = await Passenger.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    res.status(200).json(updatedRide);
+  } catch (error) {
+    console.error('Error updating trip:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+module.exports = { getPassenger , getPassengerByEmail, postPassenger, getLatestPassengerRequestByEmail, updatePassengerStatus };
